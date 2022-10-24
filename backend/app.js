@@ -8,7 +8,8 @@ var logger = require("morgan");
 const csurf = require("csurf");
 
 // var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/api/users");
+require("./models/User");
+const usersRouter = require("./routes/api/users");
 var tweetsRouter = require("./routes/api/tweets");
 var csrfRouter = require("./routes/api/csrf");
 
@@ -41,6 +42,7 @@ app.use(
 );
 
 // app.use("/", indexRouter);
+
 app.use("/api/users", usersRouter);
 app.use("/api/tweets", tweetsRouter);
 app.use("/api/csrf", csrfRouter);
