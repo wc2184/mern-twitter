@@ -9,6 +9,7 @@ const csurf = require("csurf");
 
 // var indexRouter = require("./routes/index");
 require("./models/User");
+require("./models/Tweet");
 // make sure to import after this shit
 require("./config/passport"); // <-- ADD THIS LINE
 const passport = require("passport"); // <-- ADD THIS LINE
