@@ -33,7 +33,7 @@ if (!isProduction) {
 }
 // csurf
 // YOU GOTTA PUT THIS BELOW THE COOKIE PARSER
-
+console.log("getting here boi");
 app.use(
   csurf({
     cookie: {
@@ -43,6 +43,7 @@ app.use(
     },
   })
 );
+console.log("also getting here boi");
 
 // app.use("/", indexRouter);
 

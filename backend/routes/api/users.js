@@ -6,16 +6,20 @@ const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const { loginUser, restoreUser } = require("../../config/passport");
 const { isProduction } = require("../../config/keys");
+// routes/api/users.js
 
+const validateRegisterInput = require("../../validations/register");
+const validateLoginInput = require("../../validations/login");
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
   // res.send("Respond wdissth a resource");
+  console.log("finally getting here boi");
   let users = await User.find();
   res.json({
     user: users,
   });
 });
-
+// GOAT KNOWLEDGE: every SINGLE USER GOES TO /CURRENT FIRST right away facilitate obtaining an initial CSRF-TOKEN. This is caused by a useEffect dispatch in App.js that fetches into GET api/users/current.
 router.get("/current", restoreUser, (req, res) => {
   if (!isProduction) {
     // In development, allow React server to gain access to the CSRF token
@@ -31,9 +35,10 @@ router.get("/current", restoreUser, (req, res) => {
     email: req.user.email,
   });
 });
-
-router.post("/register", async (req, res, next) => {
+console.log("testtoo");
+router.post("/register", validateRegisterInput, async (req, res, next) => {
   // let user = await User.findOne({ username: req.body.username }); // just one condition
+  console.log("going here register csrf");
   let user = await User.findOne({
     $or: [{ username: req.body.username }, { email: req.body.email }],
   });
@@ -73,7 +78,7 @@ router.post("/register", async (req, res, next) => {
   });
 });
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", validateLoginInput, async (req, res, next) => {
   passport.authenticate("local", async function (err, user) {
     if (err) return next(err);
     if (!user) {
