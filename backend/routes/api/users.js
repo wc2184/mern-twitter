@@ -5,10 +5,11 @@ const mongoose = require("mongoose");
 const User = mongoose.model("User");
 
 /* GET users listing. */
-router.get("/", function (req, res, next) {
+router.get("/", async function (req, res, next) {
   // res.send("Respond wdissth a resource");
+  let users = await User.find();
   res.json({
-    message: "GET /api/users",
+    user: users,
   });
 });
 
@@ -26,7 +27,29 @@ router.post("/register", async (req, res, next) => {
     if (user.email === req.body.email) errors.email = "Email already exists";
     if (user.username === req.body.username)
       errors.username = "Username already exists";
+    err.errors = errors;
+    next(err);
+    return;
   }
+
+  const newUser = new User({
+    username: req.body.username,
+    email: req.body.email,
+  });
+
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) throw err;
+    bcrypt.hash(req.body.password, salt, async (err, hashedPassword) => {
+      if (err) throw err;
+      try {
+        newUser.hashedPassword = hashedPassword;
+        const user = await newUser.save();
+        return res.json({ user });
+      } catch (err) {
+        next(err);
+      }
+    });
+  });
 });
 
 module.exports = router;
