@@ -9,18 +9,12 @@ const csurf = require("csurf");
 
 // var indexRouter = require("./routes/index");
 require("./models/User");
+// make sure to import after this shit
+require("./config/passport"); // <-- ADD THIS LINE
+const passport = require("passport"); // <-- ADD THIS LINE
 const usersRouter = require("./routes/api/users");
 var tweetsRouter = require("./routes/api/tweets");
 var csrfRouter = require("./routes/api/csrf");
-
-// cors
-const cors = require("cors");
-const { isProduction } = require("./config/keys");
-
-//* enable cors only in development
-if (!isProduction) {
-  app.use(cors());
-}
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -28,6 +22,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, "public")));
 
+app.use(passport.initialize());
+
+// cors
+const cors = require("cors");
+const { isProduction } = require("./config/keys");
+//* enable cors only in development
+if (!isProduction) {
+  app.use(cors());
+}
 // csurf
 // YOU GOTTA PUT THIS BELOW THE COOKIE PARSER
 
