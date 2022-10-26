@@ -8,17 +8,28 @@ import NavBar from "./components/NavBar/NavBar";
 import MainPage from "./components/MainPage/MainPage";
 import LoginForm from "./components/SessionForms/LoginForm";
 import SignupForm from "./components/SessionForms/SignupForm";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getCurrentUser } from "./store/session";
 function App() {
-  return (
-    <>
-      <NavBar />
+  const [loaded, setLoaded] = useState(false);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getCurrentUser()).then(() => setLoaded(true));
+  }, [dispatch]);
 
-      <Switch>
-        <AuthRoute exact path="/" component={MainPage} />
-        <AuthRoute exact path="/login" component={LoginForm} />
-        <AuthRoute exact path="/signup" component={SignupForm} />
-      </Switch>
-    </>
+  return (
+    loaded && (
+      <>
+        <NavBar />
+        <Switch>
+          <AuthRoute exact path="/" component={MainPage} />
+          <AuthRoute exact path="/login" component={LoginForm} />
+          <AuthRoute exact path="/signup" component={SignupForm} />
+        </Switch>
+      </>
+    )
   );
 }
 
